@@ -4,6 +4,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require('cors')
+const path = require("path")
 
 // Import DB Connection
 require("./config/db");
@@ -18,6 +19,7 @@ const port = process.env.PORT || 4000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors()) // Use this after the variable declaration
+app.use(express.static(path.join(__dirname, "client", "build")))
 
 // Add endpoint
 app.get('/', (req, res) => {
@@ -27,6 +29,10 @@ app.get('/', (req, res) => {
 // Import API route
 const routes = require('./routes/recipeRoutes'); //importing route
 routes(app);
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
 
 // Listen to server
 app.listen(port, () => {
